@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Sorteio Nosso Atacado</title>
+    <script src="https://cdn.jsdelivr.net/npm/disable-devtool"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 400px;
+            margin: 0 auto;
+            background: #f9f9f9;
+            user-select: none;
+            -webkit-user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .logo {
+            width: 100%;
+            max-width: 180px;
+            margin-bottom: 20px;
+            pointer-events: none;
+            -webkit-user-drag: none;
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 15px;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            user-select: auto;
+            -webkit-user-select: auto;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #0b7dda;
+        }
+
+        button:disabled {
+            background-color: #999;
+            cursor: not-allowed;
+        }
+
+        #msg {
+            margin-top: 15px;
+            font-weight: bold;
+        }
+
+        .aviso-cpf {
+            color: #d93025;
+            font-size: 12px;
+            font-weight: bold;
+            display: block;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body oncontextmenu="return false;">
+    <div class="container">
+        <img src="https://i.imgur.com/OzuBR3r.png" alt="Logo" class="logo" draggable="false">
+        <h2 style="margin-top: 0;">Cadastro para Sorteio</h2>
+        <p style="font-size: 14px; color: #555;">1 cadastro por CPF a cada 7 dias.</p>
+
+        <div class="input-group">
+            <label for="nome">Nome Completo:</label>
+            <input type="text" id="nome" placeholder="Digite seu nome" required>
+        </div>
+
+        <div class="input-group">
+            <label for="cpf">CPF:</label>
+            <input type="text" id="cpf" placeholder="000.000.000-00" maxlength="14" oninput="mascaraCPF(this)" required>
+            <span class="aviso-cpf">⚠️ Coloque seu CPF real. Se for sorteado e o CPF for falso, você não ganha.</span>
+        </div>
+
+        <div class="input-group">
+            <label for="celular">Celular / WhatsApp:</label>
+            <input type="text" id="celular" placeholder="(81) 99999-9999" maxlength="15" oninput="mascaraCelular(this)"
+                required>
+        </div>
+
+        <button id="btnEnviar" onclick="enviar()">Participar do Sorteio</button>
+        <p id="msg"></p>
+    </div>
+
+    <script>
+        function mascaraCPF(campo) {
+            var v = campo.value.replace(/\D/g, "");
+            if (v.length > 11) v = v.substring(0, 11);
+            v = v.replace(/(\d{3})(\d)/, "$1.$2");
+            v = v.replace(/(\d{3})(\d)/, "$1.$2");
+            v = v.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+            campo.value = v;
+        }
+
+        function mascaraCelular(campo) {
+            var v = campo.value.replace(/\D/g, "");
+            if (v.length > 11) v = v.substring(0, 11);
+            if (v.length > 2) v = v.replace(/^(\d{2})(\d)/g, "($1) $2");
+            if (v.length > 7) v = v.replace(/(\d{5})(\d{1,4})$/, "$1-$2");
+            campo.value = v;
+        }
+
+        const URL_API = "https://script.google.com/macros/s/AKfycbzDTiNGUzB91sLWF6I-1Ve5Av0lHYvbLwMaGVFplnVhlPSgPabYnhyAZHtJTqpVnYyh/exec";
+
+        function enviar() {
+            var btn = document.getElementById('btnEnviar');
+            var nome = document.getElementById('nome').value;
+            var cpf = document.getElementById('cpf').value;
+            var celular = document.getElementById('celular').value;
+            var msgEl = document.getElementById('msg');
+
+            if (!nome || !cpf || !celular) {
+                msgEl.innerText = "Preencha todos os campos.";
+                msgEl.style.color = "red";
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerText = "Enviando...";
+            msgEl.innerText = "";
+
+            fetch(URL_API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({ nome: nome, cpf: cpf, celular: celular })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    msgEl.innerText = data.mensagem;
+                    btn.disabled = false;
+                    btn.innerText = "Participar do Sorteio";
+
+                    if (data.status === "sucesso") {
+                        msgEl.style.color = "green";
+                        document.getElementById('nome').value = "";
+                        document.getElementById('cpf').value = "";
+                        document.getElementById('celular').value = "";
+                    } else {
+                        msgEl.style.color = "red";
+                    }
+                })
+                .catch(erro => {
+                    msgEl.innerText = "Erro na conexão. Tente novamente.";
+                    msgEl.style.color = "red";
+                    btn.disabled = false;
+                    btn.innerText = "Participar do Sorteio";
+                });
+        }
+    </script>
+</body>
+
+</html>
