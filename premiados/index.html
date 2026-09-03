@@ -223,6 +223,32 @@
             margin-top: 0.2rem;
         }
 
+        .btn-instagram {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 999px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-top: 0.8rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 6px -1px rgba(220, 39, 67, 0.3);
+        }
+
+        .btn-instagram:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px -1px rgba(220, 39, 67, 0.4);
+        }
+        
+        .btn-instagram svg {
+            width: 18px;
+            height: 18px;
+        }
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -328,7 +354,14 @@
                     <div class="step-number">2</div>
                     <div class="step-content">
                         <div class="step-title">Siga nas redes</div>
-                        <div class="step-desc">É obrigatório seguir a página oficial do <span class="highlight">Nosso Atacado e Varejo</span> no Instagram.</div>
+                        <div class="step-desc">
+                            É obrigatório seguir a página oficial do <span class="highlight">Nosso Atacado e Varejo</span> no Instagram.
+                            <br>
+                            <a href="https://www.instagram.com/nossoatacadoevarejo/" target="_blank" class="btn-instagram">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+                                Seguir agora
+                            </a>
+                        </div>
                     </div>
                 </div>
 
